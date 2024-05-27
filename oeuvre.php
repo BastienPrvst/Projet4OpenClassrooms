@@ -1,10 +1,23 @@
 <?php
     require 'header.php';
-    require 'oeuvres.php';
+
+    try {
+        $db = new PDO('mysql:host=localhost;dbname=artbox;charset=utf8', 'root', '');
+    } catch (Exception $e) {
+        die('Problème avec la base de données ! ' . $e->getMessage());
+    }
+
+    $getOeuvres = $db -> query("SELECT * FROM oeuvres");
+
+    $oeuvres = $getOeuvres->fetchAll(PDO::FETCH_ASSOC);
+
+//    echo '<pre>';
+//    print_r($oeuvres);
+//    echo '</pre>';
 
     // Si l'URL ne contient pas d'id, on redirige sur la page d'accueil
     if(empty($_GET['id'])) {
-        header('Location: index.php');
+        echo 'No id???';
     }
 
     $oeuvre = null;
@@ -20,17 +33,17 @@
 
     // Si aucune oeuvre trouvé, on redirige vers la page d'accueil
     if(is_null($oeuvre)) {
-        header('Location: index.php');
+        echo 'Aucune oeuvre avec l\'id ' . $_GET['id'] . ' n\'a été trouvé.';
     }
 ?>
 
 <article id="detail-oeuvre">
     <div id="img-oeuvre">
-        <img src="<?= $oeuvre['image'] ?>" alt="<?= $oeuvre['titre'] ?>">
+        <img src="<?= $oeuvre['image'] ?>" alt="<?= $oeuvre['title'] ?>">
     </div>
     <div id="contenu-oeuvre">
-        <h1><?= $oeuvre['titre'] ?></h1>
-        <p class="description"><?= $oeuvre['artiste'] ?></p>
+        <h1><?= $oeuvre['title'] ?></h1>
+        <p class="description"><?= $oeuvre['artist'] ?></p>
         <p class="description-complete">
              <?= $oeuvre['description'] ?>
         </p>
