@@ -1,23 +1,13 @@
 <?php
-    require 'header.php';
+require 'header.php';
+require 'bdd.php';
 
-    try {
-        $db = new PDO('mysql:host=localhost;dbname=artbox;charset=utf8', 'root', '');
-    } catch (Exception $e) {
-        die('Problème avec la base de données ! ' . $e->getMessage());
-    }
-
-    $getOeuvres = $db -> query("SELECT * FROM oeuvres");
-
-    $oeuvres = $getOeuvres->fetchAll(PDO::FETCH_ASSOC);
-
-//    echo '<pre>';
-//    print_r($oeuvres);
-//    echo '</pre>';
+    $db = connexion();
+    $oeuvres = getAllItems($db);
 
     // Si l'URL ne contient pas d'id, on redirige sur la page d'accueil
     if(empty($_GET['id'])) {
-        echo 'No id???';
+        header('Location: index.php');
     }
 
     $oeuvre = null;
@@ -33,19 +23,19 @@
 
     // Si aucune oeuvre trouvé, on redirige vers la page d'accueil
     if(is_null($oeuvre)) {
-        echo 'Aucune oeuvre avec l\'id ' . $_GET['id'] . ' n\'a été trouvé.';
+        header('Location: index.php');
     }
 ?>
 
 <article id="detail-oeuvre">
     <div id="img-oeuvre">
-        <img src="<?= $oeuvre['image'] ?>" alt="<?= $oeuvre['title'] ?>">
+        <img src="<?= htmlspecialchars($oeuvre['image']) ?>" alt="<?= htmlspecialchars($oeuvre['title']) ?>">
     </div>
     <div id="contenu-oeuvre">
-        <h1><?= $oeuvre['title'] ?></h1>
-        <p class="description"><?= $oeuvre['artist'] ?></p>
+        <h1><?= htmlspecialchars($oeuvre['title']) ?></h1>
+        <p class="description"><?= htmlspecialchars($oeuvre['artist']) ?></p>
         <p class="description-complete">
-             <?= $oeuvre['description'] ?>
+             <?= htmlspecialchars($oeuvre['description']) ?>
         </p>
     </div>
 </article>
