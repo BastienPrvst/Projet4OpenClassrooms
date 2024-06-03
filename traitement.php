@@ -45,8 +45,6 @@
         exit;
     }
 
-
-
     $createOeuvre = $db->prepare('INSERT INTO oeuvres(title,description,artist,image) VALUES(?,?,?,?)');
 
     $createOeuvre->execute([
@@ -60,7 +58,10 @@
 
     $_GET=['id' => $lastOeuvreId];
 
-    $url = 'oeuvre.php?id=' . urlencode($lastOeuvreId);
+    $url = sprintf(
+        'oeuvre.php?id=%s',
+        urldecode($lastOeuvreId)
+    );
 
     header('Location: ' . $url);
     exit;
